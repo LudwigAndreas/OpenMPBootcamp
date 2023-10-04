@@ -1,19 +1,8 @@
 #include <omp.h>
-#include <iostream>
+#include <stdio.h>
 
 int main() {
-	omp_set_dynamic(0);
-	omp_set_num_threads(3);
-
-	#pragma omp parallel if(omp_get_max_threads() > 2)
-	{
-		std::cout << "Hello from thread "<< omp_get_thread_num() << ", nthreads " << omp_get_num_threads() << std::endl;
-	}
-
-	omp_set_num_threads(2);
-
-	#pragma omp parallel if(omp_get_max_threads() > 2)
-	{
-		std::cout << "Hello from thread "<< omp_get_thread_num() << ", nthreads " << omp_get_num_threads() << std::endl;
-	}
+#pragma omp parallel num_threads(8)
+    printf("Hello from thread %d, nthreads %d\n", omp_get_thread_num(), omp_get_num_threads());
+    return 0;
 }

@@ -1,35 +1,35 @@
 #include <omp.h>
 #include <iostream>
 
-
-
-
 int main() {
 
-	int a = 0;
-    int b = 0;
+	int a[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	int b[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-	std::cout << "#before_scope a: " << a << " b: " << b << std::endl;
+	int min = 2147483647;
+	int max = 0;
 
-	#pragma omp parallel num_threads(2) private(a) firstprivate(b)
+	#pragma omp parallel sections num_threads(2)
 	{
-		a = 0;
-		a += omp_get_thread_num();
-		b += omp_get_thread_num();
-		#pragma omp critical
-        std::cout << "#in_scope " << omp_get_thread_num() << " a: " << a << " b: " << b << std::endl;
+		#pragma omp section 
+		{
+			for (int i = 0; i < 10; i++) {
+				if (min > a[i]) {
+                    min = a[i];
+                }
+			}
+		}
+
+		#pragma omp section
+		{
+			for (int i = 0; i < 10; i++) {
+				if (max < b[i]) {
+                    max = b[i];
+                }
+			}
+		}
 	}
 
-	std::cout << "#after_scope a: " << a << " b: " << b << std::endl;
+	std::cout << "min: " << min << ", max: " << max << std::endl;
 
-	#pragma omp parallel num_threads(4) shared(a) private(b)
-	{
-		b = 0;
-		#pragma omp atomic
-		a -= omp_get_thread_num();
-		b -= omp_get_thread_num();
-		#pragma omp critical
-		std::cout << "#in_scope " << omp_get_thread_num() << " a: " << a << " b: " << b << std::endl;
-	}
-	std::cout << "#after_scope a: " << a << " b: " << b << std::endl;
 }
