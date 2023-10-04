@@ -21,19 +21,23 @@ int main() {
         }
 		std::cout << std::endl;
     }
-
-	#pragma omp parallel for
-    for (size_t i = 0; i < height; i++) {
-        for (size_t j = 0; j < width; j++) {
-            if (max < d[i][j]) { 
+    size_t i = 0;
+    size_t j = 0;
+	#pragma omp parallel for private(i) private(j) shared(max,min)
+    for (i = 0; i < height; i++) {
+        for (j = 0; j < width; j++) {
+            if (max < d[i][j]) {
                 #pragma omp critical
-                max = d[i][j]; 
+                if (max < d[i][j]) 
+                    max = d[i][j]; 
             }
-            if (min > d[i][j]) { 
+            if (min > d[i][j]) {
                 #pragma omp critical
-                min = d[i][j]; 
+                if (min > d[i][j]) 
+                    min = d[i][j];
             }
         }
     }
+
     std::cout << "Min: " << min << " Max: " << max << std::endl;
 }

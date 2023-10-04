@@ -20,12 +20,14 @@ int main() {
     omp_init_lock(&lock);
 	#pragma omp parallel for
     for (size_t i = 0; i < len; i++) {
-        omp_set_lock(&lock);
         if (a[i] % 7 == 0 && a[i] > max) { 
-            max = a[i];
-            std::cout << "Thread: " << omp_get_thread_num() << " max = " << a[i] << std::endl;
+            omp_set_lock(&lock);
+            if (a[i] > max) { 
+                max = a[i];
+                std::cout << "Thread: " << omp_get_thread_num() << " max = " << a[i] << std::endl;
+            }
+            omp_unset_lock(&lock);
         }
-        omp_unset_lock(&lock);
     }
     omp_destroy_lock(&lock);
     std::cout << "Max: " << max << std::endl;
