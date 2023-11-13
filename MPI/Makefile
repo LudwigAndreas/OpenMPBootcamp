@@ -16,10 +16,10 @@ SUBDIRS := $(sort $(dir $(OBJS)))
 $(shell mkdir -p $(SUBDIRS))
 
 all: $(OBJS) 
-	@echo "Usage: make run $(ARGS) [NP=<number of processes>]"
+	@echo "Usage: make run FILE=<filename> [ARGS=<exec arguments>]"
 
 run: $(BUILD_DIR)
-	mpiexec ./$(BUILD_DIR)/$(FILE)
+	mpiexec ./$(BUILD_DIR)/$(FILE) $(ARGS)
 
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
