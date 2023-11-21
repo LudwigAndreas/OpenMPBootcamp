@@ -33,11 +33,6 @@ void generate_data(int arr[], size_t len) {
 
 int main(int argc, char** argv) {
 
-  if (argc < 2) {
-    printf("you need to pass 2 arguments.\n");
-    printf("Usage: mpiexec ex02 <use sequential execution> <array size>\n");
-  }
-
   int my_rank;  
   int rank;
   int num_proc;
@@ -57,6 +52,14 @@ int main(int argc, char** argv) {
   MPI_Comm_rank(MPI_COMM_WORLD,&my_rank);
 
   if (my_rank == 0) {
+
+    if (argc != 3) {
+      printf("you need to pass 2 arguments.\n");
+      printf("Usage: mpiexec ex02 <use sequential execution> <array size>\n");
+      MPI_Finalize();
+      return 0;
+    }
+
     sequential = atoi(argv[1]);
     array_len = atoi(argv[2]);
     MPI_Comm_size(MPI_COMM_WORLD, &num_proc);
